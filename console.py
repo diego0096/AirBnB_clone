@@ -130,6 +130,7 @@ class HBNBCommand(cmd.Cmd):
                 obj_list.append(val)
 
         print(obj_list)
+
     def do_update(self, args):
         '''
             Update an instance based on the class name and id
