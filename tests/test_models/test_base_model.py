@@ -102,6 +102,14 @@ class TestBase(unittest.TestCase):
         new_model = BaseModel(**my_model_dict)
         self.assertEqual(new_model.id, self.my_model.id)
 
+    def test_type_created_at(self):
+        '''Test that the new_model's updated_at
+            data type is datetime.'''
+
+        my_model_dict = self.my_model.to_dict()
+        new_model = BaseModel(my_model_dict)
+        self.assertTrue(isinstance(new_model.created_at, datetime.datetime))
+
     def test_type_updated_at(self):
         '''Test that the new_model's created_at
             data type is datetime.'''
