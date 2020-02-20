@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 '''
-    Implementation of the Review class
+    Defines the Review class
 '''
 
 from models.base_model import BaseModel
@@ -8,7 +8,7 @@ from models.base_model import BaseModel
 
 class Review(BaseModel):
     '''
-        Implementation for the Review.
+        Implements the review.
     '''
     place_id = ""
     user_id = ""
