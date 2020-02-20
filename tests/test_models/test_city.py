@@ -10,14 +10,11 @@ from models.city import City
 
 
 class TestUser(unittest.TestCase):
-    '''
-        Testing User class
-    '''
+    '''Testing User class'''
 
     def test_City_inheritance(self):
-        '''
-            tests that the City class Inherits from BaseModel
-        '''
+        '''tests that the City class Inherits from BaseModel'''
+
         new_city = City()
         self.assertIsInstance(new_city, BaseModel)
 
@@ -27,17 +24,15 @@ class TestUser(unittest.TestCase):
         self.assertTrue("name" in new_city.__dir__())
 
     def test_type_name(self):
-        '''
-            Test the type of name
-        '''
+        '''Test the type of name'''
+
         new_city = City()
         name = getattr(new_city, "name")
         self.assertIsInstance(name, str)
 
     def test_type_name(self):
-        '''
-            Test the type of name
-        '''
+        '''Test the type of name'''
+        
         new_city = City()
         name = getattr(new_city, "state_id")
         self.assertIsInstance(name, str)
