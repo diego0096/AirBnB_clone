@@ -12,62 +12,51 @@ import datetime
 
 
 class TestBase(unittest.TestCase):
-    '''
-        Testing the base class model.
-    '''
+    '''Testing the base class model.'''
 
     def setUp(self):
-        '''
-            Initializing instance.
-        '''
+        '''Initializing instance.'''
+
         self.my_model = BaseModel()
         self.my_model.name = "Binita Rai"
 
     def TearDown(self):
-        '''
-            Removing instance.
-        '''
+        '''Removing instance.'''
+        
         del self.my_model
 
     def test_id_type(self):
-        '''
-            Checks that the type of the id is string.
-        '''
+        '''Checks that the type of the id is string.'''
+
         self.assertEqual("<class 'str'>", str(type(self.my_model.id)))
 
     def test_ids_differ(self):
-        '''
-            Checks that the ids between two instances are different.
-        '''
+        '''Checks that the ids between two instances are different.'''
+
         new_model = BaseModel()
         self.assertNotEqual(new_model.id, self.my_model.id)
 
     def test_name(self):
-        '''
-            Checks that an attribute can be added.
-        '''
+        '''Checks that an attribute can be added.'''
+
         self.assertEqual("Binita Rai", self.my_model.name)
 
     def test_a_updated_created_equal(self):
-        '''
-            Checks that both dates are equal.
-        '''
+        '''Checks that both dates are equal.'''
+
         self.assertEqual(self.my_model.updated_at.year,
                          self.my_model.created_at.year)
 
     def test_save(self):
-        '''
-            Checks that after updating the instance; the dates differ in the
-            updated_at attribute.
-        '''
+        '''Checks that after updating the instance; the dates differ in the
+            updated_at attribute.'''
         old_update = self.my_model.updated_at
         self.my_model.save()
         self.assertNotEqual(self.my_model.updated_at, old_update)
 
     def test_str_overide(self):
-        '''
-            Checks that the right message gets printed.
-        '''
+        '''Checks that the right message gets printed.'''
+
         backup = sys.stdout
         inst_id = self.my_model.id
         capture_out = StringIO()
@@ -81,9 +70,7 @@ class TestBase(unittest.TestCase):
         sys.stdout = backup
 
     def test_to_dict_type(self):
-        '''
-            Checks that the to_dict method return type.
-        '''
+        '''Checks that the to_dict method return type.'''
 
         self.assertEqual("<class 'dict'>",
                          str(type(self.my_model.to_dict())))
