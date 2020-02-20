@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 '''
-    Implementing the console for the HBnB project.
+    Creating the console for HBnB.
 '''
 import cmd
 import json
@@ -24,7 +24,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_quit(self, args):
         '''
-            Quit command to exit the program.
+            Command to exit the program.
         '''
         return True
 
@@ -36,8 +36,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         '''
-            Create a new instance of class BaseModel and saves it
-            to the JSON file.
+            Create an instance of class BaseModel and saves it
+            into the JSON file.
         '''
         if len(args) == 0:
             print("** class name missing **")
@@ -47,13 +47,12 @@ class HBNBCommand(cmd.Cmd):
             new_instance = eval(args[0])()
             new_instance.save()
             print(new_instance.id)
-
         except:
             print("** class doesn't exist **")
 
     def do_show(self, args):
         '''
-            Print the string representation of an instance baed on
+            Print a string representation of an instance based on
             the class name and id given as args.
         '''
         args = shlex.split(args)
