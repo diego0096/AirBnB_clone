@@ -22,7 +22,7 @@ class TestBase(unittest.TestCase):
 
     def TearDown(self):
         '''Removing instance.'''
-        
+
         del self.my_model
 
     def test_id_type(self):
@@ -101,7 +101,7 @@ class TestBase(unittest.TestCase):
         my_model_dict = self.my_model.to_dict()
         new_model = BaseModel(**my_model_dict)
         self.assertEqual(new_model.id, self.my_model.id)
-                         
+
     def test_type_updated_at(self):
         '''Test that the new_model's created_at
             data type is datetime.'''
