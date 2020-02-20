@@ -1,133 +1,103 @@
 #!/usr/bin/python3
-"""
-Unittest for FileStorage Class.
-"""
-import unittest
+'''
+    Testing the file_storage module.
+'''
+
 import os
-import datetime
+import time
 import json
-from models.engine.file_storage import FileStorage
+import unittest
 from models.base_model import BaseModel
-import models
+from models.engine.file_storage import FileStorage
 
 
-class TestFileStorageClassCreation(unittest.TestCase):
-    """
-    Tests cases for FileStorage Class.
-    """
+class testFileStorage(unittest.TestCase):
+    '''
+        Testing the FileStorage class
+    '''
 
     def setUp(self):
-        """SetUp test. """
-        self.file = 'file.json'
-        try:
-            os.remove(self.file)
-        except:
-            pass
-        self.x = BaseModel()
-        self.fs = FileStorage()
-        self.storage = models.storage
+        '''
+            Initializing classes
+        '''
+        self.storage = FileStorage()
+        self.my_model = BaseModel()
 
     def tearDown(self):
-        """End of variable test. """
+        '''
+            Cleaning up.
+        '''
+
         try:
-            os.remove(self.file)
-        except:
+            os.remove("file.json")
+        except FileNotFoundError:
             pass
 
-    def test_inheritance(self):
-        self.assertIsInstance(self.fs, FileStorage)
-
-    def test_fs_has_class_attributes(self):
-        self.assertIsInstance(self.fs._FileStorage__file_path, str)
-        self.assertIsInstance(self.fs._FileStorage__objects, dict)
-
-    def test_inheritance_storage(self):
-        self.assertIsInstance(self.storage, FileStorage)
-
-    def test_fs_has_class_attributes_storage(self):
-        self.assertIsInstance(self.storage._FileStorage__file_path, str)
-        self.assertIsInstance(self.storage._FileStorage__objects, dict)
-
-    def test_fs_attributes_private(self):
-        fs = FileStorage()
-        with self.assertRaises(Exception):
-            fs.__objects
-        with self.assertRaises(Exception):
-            fs.__file_path
-        with self.assertRaises(Exception):
-            getattr(fs, '__objects')
-        with self.assertRaises(Exception):
-            getattr(fs, '__file_path')
-
-    def test_creation_with_arg(self):
-        with self.assertRaises(Exception):
-            fs = FileStorage(3)
-        with self.assertRaises(Exception):
-            fs = FileStorage("hello")
-        with self.assertRaises(Exception):
-            fs = FileStorage([])
-
-    def test_all_method(self):
-        self.assertIsInstance(self.storage.all(), dict)
-        count = len(self.storage.all())
-        self.assertTrue(count != 0)
+    def test_all_return_type(self):
+        '''
+            Tests the data type of the return value of the all method.
+        '''
+        storage_all = self.storage.all()
+        self.assertIsInstance(storage_all, dict)
 
     def test_new_method(self):
-        x = BaseModel()
-        obj_key = "{}.{}".format(x.__class__.__name__, x.id)
-        self.storage.new(x)
-        self.assertTrue(obj_key in self.storage._FileStorage__objects)
-        self.assertIsInstance(self.storage._FileStorage__objects[obj_key],
-                              BaseModel)
-        temp_bm = self.storage._FileStorage__objects[obj_key]
-        self.assertEqual(temp_bm.__class__.__name__,
-                         'BaseModel')
-        self.assertEqual(temp_bm.id, x.id)
+        '''
+            Tests that the new method sets the right key and value pair
+            in the FileStorage.__object attribute
+        '''
+        self.storage.new(self.my_model)
+        key = str(self.my_model.__class__.__name__ + "." + self.my_model.id)
+        self.assertTrue(key in self.storage._FileStorage__objects)
 
-    def test_new_method_1(self):
-        count = len(self.storage.all())
-        y = BaseModel()
-        new_count = len(self.storage.all())
-        self.assertEqual(count + 1, new_count)
-        self.assertEqual(y.__class__.__name__, 'BaseModel')
-        self.assertTrue(hasattr(y, 'created_at'))
-        self.assertTrue(hasattr(y, 'updated_at'))
+    def test_objects_value_type(self):
+        '''
+            Tests that the type of value contained in the FileStorage.__object
+            is of type obj.__class__.__name__
+        '''
+        self.storage.new(self.my_model)
+        key = str(self.my_model.__class__.__name__ + "." + self.my_model.id)
+        val = self.storage._FileStorage__objects[key]
+        self.assertIsInstance(self.my_model, type(val))
 
-    def test_save_method(self):
-        # self.assertIsInstance(self.storage._FileStorage__objects, dict)
-        self.x = BaseModel()
+    def test_save_file_exists(self):
+        '''
+            Tests that a file gets created with the name file.json
+        '''
         self.storage.save()
-        self.assertTrue(os.path.exists(self.file))
-        self.assertTrue(os.stat(self.file).st_size != 0)
+        self.assertTrue(os.path.isfile("file.json"))
 
-    def test_reload_method(self):
-        self.x = BaseModel()
-        self.x.custom = "Warriors"
-        x_id_key = "{}.{}".format(self.x.__class__.__name__, self.x.id)
-        self.storage.new(self.x)
+    def test_save_file_read(self):
+        '''
+            Testing the contents of the files inside the file.json
+        '''
         self.storage.save()
-        self.storage._FileStorage__objects = {}
-        self.storage.reload()
-        temp_obj = self.storage._FileStorage__objects[x_id_key]
-        self.assertEqual(self.x.id,
-                         temp_obj.id)
-        self.assertEqual(self.x.created_at,
-                         temp_obj.created_at)
-        self.assertEqual(self.x.updated_at,
-                         temp_obj.updated_at)
-        self.assertEqual(self.x.custom,
-                         temp_obj.custom)
-        self.assertIsInstance(self.x.id,
-                              str)
-        self.assertIsInstance(self.x.created_at,
-                              datetime.datetime)
-        self.assertIsInstance(self.x.updated_at,
-                              datetime.datetime)
-        self.assertIsInstance(self.x.custom,
-                              str)
+        self.storage.new(self.my_model)
 
-    def test_str_method(self):
-        string = "[{}] ({}) {}".format(self.x.__class__.__name__,
-                                       self.x.id,
-                                       self.x.__dict__)
-        self.assertEqual(string, str(self.x))
+        with open("file.json", encoding="UTF8") as fd:
+            content = json.load(fd)
+
+        self.assertTrue(type(content) is dict)
+
+    def test_the_type_file_content(self):
+        '''
+            testing the type of the contents inside the file.
+        '''
+        self.storage.save()
+        self.storage.new(self.my_model)
+
+        with open("file.json", encoding="UTF8") as fd:
+            content = fd.read()
+
+        self.assertIsInstance(content, str)
+
+    def test_reaload_without_file(self):
+        '''
+            Tests that nothing happens when file.json does not exists
+            and reload is called
+        '''
+
+        try:
+            self.storage.reload()
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
