@@ -38,21 +38,21 @@ class BaseModel:
 
     def __repr__(self):
         '''
-            Return string representation of BaseModel class
+            Return string representation.
         '''
         return ("[{}] ({}) {}".format(self.__class__.__name__,
                                       self.id, self.__dict__))
 
     def save(self):
         '''
-            Update the updated_at attribute with new.
+            Update the updated_at attribute with a new one.
         '''
         self.updated_at = datetime.now()
         models.storage.save()
 
     def to_dict(self):
         '''
-            Return dictionary representation of BaseModel class.
+            Return dictionary representation.
         '''
         cp_dct = dict(self.__dict__)
         cp_dct['__class__'] = self.__class__.__name__
