@@ -1,102 +1,112 @@
 #!/usr/bin/python3
-"""
-Unittest for base_model Class.
-"""
+
+'''
+    All the test for the base_model are implemented here.
+'''
+
 import unittest
 from models.base_model import BaseModel
-import os
-import pep8
+from io import StringIO
+import sys
+import datetime
 
 
-class Test_BaseModel(unittest.TestCase):
-    """
-    Test cases for BaseModel Class.
-    """
-    def test_docstring(self):
-        """Tests for docstring. """
-        self.assertTrue(len(BaseModel.__doc__) > 1)
-        self.assertTrue(len(BaseModel.__init__.__doc__) > 1)
-        self.assertTrue(len(BaseModel.__str__.__doc__) > 1)
-        self.assertTrue(len(BaseModel.save.__doc__) > 1)
-        self.assertTrue(len(BaseModel.to_dict.__doc__) > 1)
-
-    def test_pep8(self):
-        """Pep8 Test. """
-        style = pep8.StyleGuide(quiet=True)
-        result = style.check_files(['models/base_model.py'])
-        self.assertEqual(result.total_errors, 0, "fix pep8")
+class TestBase(unittest.TestCase):
+    '''
+        Testing the base class model.
+    '''
 
     def setUp(self):
-        """Setup Test. """
-        pass
+        '''
+            Initializing instance.
+        '''
+        self.my_model = BaseModel()
+        self.my_model.name = "Binita Rai"
 
-    def tearDown(self):
-        """End Variable Test. """
-        try:
-            os.remove("file.json")
-        except:
-            pass
+    def TearDown(self):
+        '''
+            Removing instance.
+        '''
+        del self.my_model
 
-    def test_init_arg(self):
-        """Pass an arg into an instance. """
-        b1 = BaseModel(12)
-        self.assertEqual(type(b1).__name__, "BaseModel")
-        self.assertFalse(hasattr(b1, "12"))
+    def test_id_type(self):
+        '''
+            Checks that the type of the id is string.
+        '''
+        self.assertEqual("<class 'str'>", str(type(self.my_model.id)))
 
-    def test_init_kwarg(self):
-        """Test for kwarg."""
-        b1 = BaseModel(name="Red")
-        self.assertEqual(type(b1).__name__, "BaseModel")
-        self.assertTrue(hasattr(b1, "name"))
-        self.assertTrue(hasattr(b1, "__class__"))
-        self.assertFalse(hasattr(b1, "id"))
-        self.assertFalse(hasattr(b1, "created_at"))
-        self.assertFalse(hasattr(b1, "updated_at"))
-
-    def test_str_method(self):
-        """Test for printing method. """
-        b1 = BaseModel()
-        b1printed = b1.__str__()
-        self.assertEqual(b1printed,
-                         "[BaseModel] ({}) {}".format(b1.id, b1.__dict__))
-
-    def test_before_todict(self):
-        """Tests the instance before using to_dict method. """
-        b1 = BaseModel()
-        b1_dict = b1.__dict__
-        self.assertEqual(type(b1).__name__, "BaseModel")
-        self.assertTrue(hasattr(b1, '__class__'))
-        self.assertEqual(str(b1.__class__),
-                         "<class 'models.base_model.BaseModel'>")
-        self.assertTrue(type(b1_dict['created_at']), 'datetime.datetime')
-        self.assertTrue(type(b1_dict['updated_at']), 'datetime.datetime')
-        self.assertTrue(type(b1_dict['id']), 'str')
-
-    def test_after_todict(self):
-        """Tests the method to_dict. """
-        my_model = BaseModel()
+    def test_ids_differ(self):
+        '''
+            Checks that the ids between two instances are different.
+        '''
         new_model = BaseModel()
-        test_dict = my_model.to_dict()
-        self.assertIsInstance(my_model, BaseModel)
-        self.assertEqual(type(my_model).__name__, "BaseModel")
-        self.assertEqual(test_dict['__class__'], "BaseModel")
-        self.assertTrue(type(test_dict['__class__']), 'str')
-        self.assertTrue(type(test_dict['created_at']), 'str')
-        self.assertTrue(type(test_dict['updated_at']), 'str')
-        self.assertTrue(type(test_dict['id']), 'str')
-        self.assertNotEqual(my_model.id, new_model.id)
+        self.assertNotEqual(new_model.id, self.my_model.id)
 
-    def test_hasattribute(self):
-        """Test Attributes. """
-        b1 = BaseModel()
-        self.assertTrue(hasattr(b1, "__init__"))
-        self.assertTrue(hasattr(b1, "created_at"))
-        self.assertTrue(hasattr(b1, "updated_at"))
-        self.assertTrue(hasattr(b1, "id"))
+    def test_name(self):
+        '''
+            Checks that an attribute can be added.
+        '''
+        self.assertEqual("Binita Rai", self.my_model.name)
+
+    def test_a_updated_created_equal(self):
+        '''
+            Checks that both dates are equal.
+        '''
+        self.assertEqual(self.my_model.updated_at.year,
+                         self.my_model.created_at.year)
 
     def test_save(self):
-        """Test for saving fuction. """
-        b1 = BaseModel()
-        b1.save()
-        b_dict = b1.to_dict()
-        self.assertNotEqual(b_dict['created_at'], b_dict['updated_at'])
+        '''
+            Checks that after updating the instance; the dates differ in the
+            updated_at attribute.
+        '''
+        old_update = self.my_model.updated_at
+        self.my_model.save()
+        self.assertNotEqual(self.my_model.updated_at, old_update)
+
+    def test_str_overide(self):
+        '''
+            Checks that the right message gets printed.
+        '''
+        backup = sys.stdout
+        inst_id = self.my_model.id
+        capture_out = StringIO()
+        sys.stdout = capture_out
+        print(self.my_model)
+
+        cap = capture_out.getvalue().split(" ")
+        self.assertEqual(cap[0], "[BaseModel]")
+
+        self.assertEqual(cap[1], "({})".format(inst_id))
+        sys.stdout = backup
+
+    def test_to_dict_type(self):
+        '''
+            Checks that the to_dict method return type.
+        '''
+
+        self.assertEqual("<class 'dict'>",
+                         str(type(self.my_model.to_dict())))
+
+    def test_to_dict_class(self):
+        '''
+            Checks that the __class__ key exists.
+        '''
+
+        self.assertEqual("BaseModel", (self.my_model.to_dict())["__class__"])
+
+    def test_to_dict_type_updated_at(self):
+        '''
+            Checks the type of the value of updated_at.
+        '''
+        self.assertEqual("<class 'str'>",
+                         str(type((self.my_model.to_dict())["updated_at"])))
+                         
+    def test_type_updated_at(self):
+        '''
+            Test that the new_model's created_at
+            data type is datetime.
+        '''
+        my_model_dict = self.my_model.to_dict()
+        new_model = BaseModel(my_model_dict)
+        self.assertTrue(isinstance(new_model.updated_at, datetime.datetime))
