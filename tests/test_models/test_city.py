@@ -1,84 +1,43 @@
 #!/usr/bin/python3
-"""
-Unittest for City Class.
-"""
-from models.city import City
-import pep8
-import os
+
+'''
+    All the test for the user model are implemented here.
+'''
+
 import unittest
+from models.base_model import BaseModel
+from models.city import City
 
 
-class Test_City(unittest.TestCase):
-    """Tests cases for City Class. """
+class TestUser(unittest.TestCase):
+    '''
+        Testing User class
+    '''
 
-    def test_docstring(self):
-        self.assertTrue(len(City.__doc__) > 1)
-        self.assertTrue(len(City.__init__.__doc__) > 1)
-        self.assertTrue(len(City.__str__.__doc__) > 1)
-        self.assertTrue(len(City.save.__doc__) > 1)
-        self.assertTrue(len(City.to_dict.__doc__) > 1)
+    def test_City_inheritance(self):
+        '''
+            tests that the City class Inherits from BaseModel
+        '''
+        new_city = City()
+        self.assertIsInstance(new_city, BaseModel)
 
-    def test_pep8(self):
-        style = pep8.StyleGuide(quiet=True)
-        result = style.check_files(['models/city.py'])
-        self.assertEqual(result.total_errors, 0, "fix pep8")
+    def test_User_attributes(self):
+        new_city = City()
+        self.assertTrue("state_id" in new_city.__dir__())
+        self.assertTrue("name" in new_city.__dir__())
 
-    def setUp(self):
-        pass
+    def test_type_name(self):
+        '''
+            Test the type of name
+        '''
+        new_city = City()
+        name = getattr(new_city, "name")
+        self.assertIsInstance(name, str)
 
-    def tearDown(self):
-        try:
-            os.remove("file.json")
-        except:
-            pass
-
-    def test_init_arg(self):
-        b1 = City(23)
-        self.assertEqual(type(b1).__name__, "City")
-        self.assertFalse(hasattr(b1, "23"))
-
-    def test_init_kwarg(self):
-        b1 = City(name="Osaka")
-        self.assertEqual(type(b1).__name__, "City")
-        self.assertTrue(hasattr(b1, "name"))
-        self.assertFalse(hasattr(b1, "id"))
-        self.assertFalse(hasattr(b1, "created_at"))
-        self.assertFalse(hasattr(b1, "updated_at"))
-        self.assertTrue(hasattr(b1, "__class__"))
-
-    def test_str_method(self):
-        b1 = City()
-        b1printed = b1.__str__()
-        self.assertEqual(b1printed,
-                         "[City] ({}) {}".format(b1.id, b1.__dict__))
-
-    def test_before_todict(self):
-        b1 = City()
-        b1_dict = b1.__dict__
-        self.assertEqual(type(b1).__name__, "City")
-        self.assertTrue(hasattr(b1, '__class__'))
-        self.assertEqual(str(b1.__class__),
-                         "<class 'models.city.City'>")
-        self.assertTrue(type(b1_dict['created_at']), 'datetime.datetime')
-        self.assertTrue(type(b1_dict['updated_at']), 'datetime.datetime')
-        self.assertTrue(type(b1_dict['id']), 'str')
-
-    def test_after_todict(self):
-        my_model = City()
-        new_model = City()
-        test_dict = my_model.to_dict()
-        self.assertIsInstance(my_model, City)
-        self.assertEqual(type(my_model).__name__, "City")
-        self.assertEqual(test_dict['__class__'], "City")
-        self.assertTrue(type(test_dict['__class__']), 'str')
-        self.assertTrue(type(test_dict['created_at']), 'str')
-        self.assertTrue(type(test_dict['updated_at']), 'str')
-        self.assertTrue(type(test_dict['id']), 'str')
-        self.assertNotEqual(my_model.id, new_model.id)
-
-    def test_hasattribute(self):
-        b1 = City()
-        self.assertTrue(hasattr(b1, "__init__"))
-        self.assertTrue(hasattr(b1, "created_at"))
-        self.assertTrue(hasattr(b1, "updated_at"))
-        self.assertTrue(hasattr(b1, "id"))
+    def test_type_name(self):
+        '''
+            Test the type of name
+        '''
+        new_city = City()
+        name = getattr(new_city, "state_id")
+        self.assertIsInstance(name, str)
