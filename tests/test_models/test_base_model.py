@@ -76,24 +76,53 @@ class TestBase(unittest.TestCase):
                          str(type(self.my_model.to_dict())))
 
     def test_to_dict_class(self):
-        '''
-            Checks that the __class__ key exists.
-        '''
+        '''Checks that the __class__ key exists. '''
 
         self.assertEqual("BaseModel", (self.my_model.to_dict())["__class__"])
 
     def test_to_dict_type_updated_at(self):
-        '''
-            Checks the type of the value of updated_at.
-        '''
+        '''Checks the type of the value of updated_at.'''
+
         self.assertEqual("<class 'str'>",
                          str(type((self.my_model.to_dict())["updated_at"])))
+
+    def test_to_dict_type_created_at(self):
+        '''
+            Checks the type of the value of created_at.
+        '''
+        tmp = self.my_model.to_dict()
+        self.assertEqual("<class 'str'>", str(type(tmp["created_at"])))
+
+    def test_kwargs_instantiation(self):
+        '''
+            Test that an instance is created using the
+            key value pair.
+        '''
+        my_model_dict = self.my_model.to_dict()
+        new_model = BaseModel(**my_model_dict)
+        self.assertEqual(new_model.id, self.my_model.id)
                          
     def test_type_updated_at(self):
-        '''
-            Test that the new_model's created_at
-            data type is datetime.
-        '''
+        '''Test that the new_model's created_at
+            data type is datetime.'''
+
         my_model_dict = self.my_model.to_dict()
         new_model = BaseModel(my_model_dict)
         self.assertTrue(isinstance(new_model.updated_at, datetime.datetime))
+
+    def test_compare_dict(self):
+        '''Test that the new_model's and my_model's
+            dictionary values are same.'''
+
+        my_model_dict = self.my_model.to_dict()
+        new_model = BaseModel(**my_model_dict)
+        new_model_dict = new_model.to_dict()
+        self.assertEqual(my_model_dict, new_model_dict)
+
+    def test_instance_diff(self):
+        '''Test that the my_model and new_model are
+            not the same instance.'''
+
+        my_model_dict = self.my_model.to_dict()
+        new_model = BaseModel(my_model_dict)
+        self.assertNotEqual(self.my_model, new_model)
