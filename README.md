@@ -80,5 +80,7 @@ $
 
 ## Authors
 
- - Mauricio Drada Dávila
- - Diego Felipe Quijano Zuñiga
+The authors.
+
+* Mauricio Drada Dávila
+* Diego Felipe Quijano Zuñiga
