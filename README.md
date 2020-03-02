@@ -12,7 +12,7 @@ Each task is linked and will help us to:
 * Create a simple flow of serialization/deserialization: Instance <-> Dictionary <-> JSON string <-> file.
 * Create all classes used for AirBnB (User, State, City, Place…) that inherit from BaseModel.
 * Create the first abstracted storage engine of the project: File storage.
-* Create all unittests to validate all our classes and storage engine.
+* Create all unittests to validate all our classes and storage engine. Ok.
 
 ### What’s a command interpreter
 
@@ -80,5 +80,7 @@ $
 
 ## Authors
 
- - Mauricio Drada Dávila
- - Diego Felipe Quijano Zuñiga
+The authors.
+
+* Mauricio Drada Dávila
+* Diego Felipe Quijano Zuñiga
